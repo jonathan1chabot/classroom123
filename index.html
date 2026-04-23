@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NexusHub — Games, Movies & Proxy</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+  </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+  <a class="nav-logo" href="#" onclick="showSection('home')">⚡ NexusHub</a>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showSection('home')" id="nav-home" class="active">🏠 <span>Home</span></a></li>
+    <li><a href="#" onclick="showSection('games')" id="nav-games">🎮 <span>Games</span></a></li>
+    <li><a href="#" onclick="showSection('movies')" id="nav-movies">🎬 <span>Movies</span></a></li>
+    <li><a href="#" onclick="showSection('proxy')" id="nav-proxy">🌐 <span>Proxy</span></a></li>
+  </ul>
+  <div class="nav-search">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="global-search" placeholder="Search games, movies..." oninput="globalSearch(this.value)" />
+  </div>
+</nav>
+
+<!-- ===== GAME/MOVIE MODAL ===== -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">
+        <span id="modal-icon">🎮</span>
+        <span id="modal-name">Loading...</span>
+      </div>
+      <div class="modal-controls">
+        <button class="modal-btn" onclick="reloadFrame()" title="Reload">↺</button>
+        <button class="modal-btn" onclick="openInTab()" title="Open in new tab">↗</button>
+        <button class="modal-btn" onclick="toggleFullscreen()" title="Fullscreen">⛶</button>
+        <button class="modal-btn close-btn" onclick="closeModal()" title="Close">✕</button>
+      </div>
+    </div>
+    <iframe class="modal-frame" id="modal-frame" src="" allowfullscreen sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation"></iframe>
+  </div>
+</div>
+
+<!-- ===== HERO ===== -->
+<div id="home-hero" class="hero">
+  <h1>Your <span class="grad">All-In-One</span><br/>Entertainment Hub</h1>
+  <p>Games, movies, TV shows, and a web proxy — all in one place. No restrictions, no sign-ups.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">200+</div><div class="stat-label">Games</div></div>
+    <div class="stat"><div class="stat-num">1,600+</div><div class="stat-label">Movies & Shows</div></div>
+    <div class="stat"><div class="stat-num">27+</div><div class="stat-label">Genres</div></div>
+    <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Free Access</div></div>
+  </div>
+</div>
+
+<!-- ===== SECTION TABS ===== -->
+<div id="section-tabs" class="section-tabs" style="max-width:1400px;margin:0 auto;">
+  <button class="tab-btn active" id="tab-home" onclick="showSection('home')">🏠 Home</button>
+  <button class="tab-btn" id="tab-games" onclick="showSection('games')">🎮 Games</button>
+  <button class="tab-btn" id="tab-movies" onclick="showSection('movies')">🎬 Movies & TV</button>
+  <button class="tab-btn" id="tab-proxy" onclick="showSection('proxy')">🌐 Web Proxy</button>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-content">
+
+  <!-- HOME PAGE -->
+  <div id="page-home" class="section-page active">
+    <!-- Trending Games Row -->
+    <div class="featured-row">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="icon icon-games">🎮</div>
+          Featured Games
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="showSection('games')">View All →</button>
+      </div>
+      <div class="games-grid" id="home-games-grid"></div>
+    </div>
+
+    <!-- Trending Movies Row -->
+    <div class="featured-row" style="margin-top:36px;">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="icon icon-movies">🎬</div>
+          Hot Right Now
+        </div>
+        <button class="btn btn-pink btn-sm" onclick="showSection('movies')">Browse All →</button>
+      </div>
+      <div class="movies-grid" id="home-movies-grid"></div>
+    </div>
+
+    <!-- Quick Proxy -->
+    <div class="featured-row" style="margin-top:36px;">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="icon icon-proxy">🌐</div>
+          Quick Proxy
+        </div>
+        <button class="btn btn-cyan btn-sm" onclick="showSection('proxy')">Full Proxy →</button>
+      </div>
+      <div class="proxy-card" style="padding:20px;">
+        <div class="proxy-input-row">
+          <input class="proxy-input" type="text" id="quick-proxy-url" placeholder="Enter URL to browse anonymously (e.g. https://google.com)" />
+          <button class="btn btn-cyan" onclick="loadQuickProxy()">🌐 Go</button>
+        </div>
+        <div id="quick-proxy-frame-container" style="display:none; height:60vh; border-radius:12px; overflow:hidden; border:1px solid var(--border);">
+          <iframe id="quick-proxy-frame" style="width:100%;height:100%;border:none;" src=""></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAMES PAGE -->
+  <div id="page-games" class="section-page">
+    <div class="section-header">
+      <div class="section-title">
+        <div class="icon icon-games">🎮</div>
+        All Games
+        <span class="badge badge-hot">GN-Math</span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" class="proxy-input" style="width:220px;padding:8px 14px;" id="game-search" placeholder="🔍 Search games..." oninput="filterGames()" />
+      </div>
+    </div>
+
+    <div class="filter-bar" id="game-filters">
+      <button class="filter-btn active" onclick="setGameFilter('all', this)">All</button>
+      <button class="filter-btn" onclick="setGameFilter('popular', this)">🔥 Popular</button>
+      <button class="filter-btn" onclick="setGameFilter('port', this)">🎯 Port</button>
+      <button class="filter-btn" onclick="setGameFilter('flash', this)">⚡ Flash</button>
+      <button class="filter-btn" onclick="setGameFilter('fnf', this)">🎵 FNF</button>
+      <button class="filter-btn" onclick="setGameFilter('dos', this)">💾 DOS</button>
+      <button class="filter-btn" onclick="setGameFilter('gba', this)">📱 GBA</button>
+    </div>
+
+    <div class="games-grid" id="games-grid"></div>
+  </div>
+
+  <!-- MOVIES PAGE -->
+  <div id="page-movies" class="section-page">
+    <div class="section-header">
+      <div class="section-title">
+        <div class="icon icon-movies">🎬</div>
+        Movies & TV Shows
+        <span class="badge badge-new">Cineby</span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" class="proxy-input" style="width:220px;padding:8px 14px;" id="movie-search" placeholder="🔍 Search movies..." oninput="filterMovies()" />
+      </div>
+    </div>
+
+    <!-- Genre chips -->
+    <div class="genre-chips" id="genre-chips"></div>
+
+    <!-- Trending -->
+    <div class="featured-row">
+      <h2>🔥 Trending This Week</h2>
+      <div class="movies-grid" id="trending-movies-grid"></div>
+    </div>
+
+    <div class="section-header" style="margin-top:24px;">
+      <div class="section-title" style="font-size:1rem;">All Movies & Shows</div>
+    </div>
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="setMovieFilter('all', this)">All</button>
+      <button class="filter-btn" onclick="setMovieFilter('movie', this)">🎬 Movies</button>
+      <button class="filter-btn" onclick="setMovieFilter('tv', this)">📺 TV Shows</button>
+    </div>
+    <div class="movies-grid" id="movies-grid"></div>
+  </div>
+
+  <!-- PROXY PAGE -->
+  <div id="page-proxy" class="section-page">
+    <div class="proxy-section">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="icon icon-proxy">🌐</div>
+          Web Proxy
+          <span class="badge badge-popular">VCSA On Top</span>
+        </div>
+      </div>
+
+      <!-- Main proxy card -->
+      <div class="proxy-card">
+        <div class="proxy-title">🔒 Browse Anonymously</div>
+        <p class="proxy-desc">Enter any URL below to browse through our proxy. Bypass restrictions and access any website securely. Powered by <strong>vcsaontop.bayworld.net</strong>.</p>
+        <div class="proxy-input-row">
+          <input class="proxy-input" type="text" id="proxy-url-input" placeholder="https://www.google.com" value="https://www.google.com" />
+          <button class="btn btn-cyan" onclick="loadProxy()">🌐 Browse</button>
+          <button class="btn btn-primary" onclick="openProxyTab()">↗ New Tab</button>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+          <button class="btn btn-sm" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);" onclick="setProxyUrl('https://www.google.com')">Google</button>
+          <button class="btn btn-sm" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);" onclick="setProxyUrl('https://www.youtube.com')">YouTube</button>
+          <button class="btn btn-sm" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);" onclick="setProxyUrl('https://www.reddit.com')">Reddit</button>
+          <button class="btn btn-sm" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);" onclick="setProxyUrl('https://discord.com')">Discord</button>
+          <button class="btn btn-sm" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);" onclick="setProxyUrl('https://www.instagram.com')">Instagram</button>
+          <button class="btn btn-sm" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);" onclick="setProxyUrl('https://twitter.com')">Twitter/X</button>
+          <button class="btn btn-sm" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);" onclick="setProxyUrl('https://www.tiktok.com')">TikTok</button>
+          <button class="btn btn-sm" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);" onclick="setProxyUrl('https://www.roblox.com')">Roblox</button>
+        </div>
+
+        <!-- Proxy iframe -->
+        <div id="proxy-frame-container" class="proxy-frame-area" style="display:none;border-radius:12px;overflow:hidden;border:1px solid var(--border);height:70vh;display:none;flex-direction:column;">
+          <div class="proxy-frame-bar" style="background:var(--bg3);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0;">
+            <span style="color:var(--text2);font-size:0.8rem;">📍</span>
+            <span id="proxy-current-url" style="flex:1;color:var(--text2);font-size:0.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+            <button class="modal-btn" onclick="reloadProxy()" title="Reload" style="width:28px;height:28px;font-size:0.8rem;">↺</button>
+            <button class="modal-btn" onclick="openProxyTab()" title="Open in new tab" style="width:28px;height:28px;font-size:0.8rem;">↗</button>
+          </div>
+          <iframe id="proxy-frame" style="flex:1;border:none;width:100%;height:100%;" src=""></iframe>
+        </div>
+      </div>
+
+      <!-- Proxy services -->
+      <div class="proxy-card">
+        <div class="proxy-title">🚀 Proxy Services</div>
+        <p class="proxy-desc">Direct links to proxy and unblocker services. Click to open in your browser.</p>
+        <div class="proxy-links">
+          <a class="proxy-link-card" href="https://vcsaontop.bayworld.net" target="_blank" rel="noopener">
+            <div class="proxy-link-icon">🔓</div>
+            <div class="proxy-link-info">
+              <div class="proxy-link-name">VCSA On Top</div>
+              <div class="proxy-link-url">vcsaontop.bayworld.net</div>
+            </div>
+          </a>
+          <a class="proxy-link-card" href="https://ultraviolet.app" target="_blank" rel="noopener">
+            <div class="proxy-link-icon">🌈</div>
+            <div class="proxy-link-info">
+              <div class="proxy-link-name">Ultraviolet Proxy</div>
+              <div class="proxy-link-url">ultraviolet.app</div>
+            </div>
+          </a>
+          <a class="proxy-link-card" href="https://www.croxyproxy.com" target="_blank" rel="noopener">
+            <div class="proxy-link-icon">🌍</div>
+            <div class="proxy-link-info">
+              <div class="proxy-link-name">CroxyProxy</div>
+              <div class="proxy-link-url">croxyproxy.com</div>
+            </div>
+          </a>
+          <a class="proxy-link-card" href="https://www.proxysite.com" target="_blank" rel="noopener">
+            <div class="proxy-link-icon">🛡️</div>
+            <div class="proxy-link-info">
+              <div class="proxy-link-name">ProxySite</div>
+              <div class="proxy-link-url">proxysite.com</div>
+            </div>
+          </a>
+          <a class="proxy-link-card" href="https://hide.me/en/proxy" target="_blank" rel="noopener">
+            <div class="proxy-link-icon">👤</div>
+            <div class="proxy-link-info">
+              <div class="proxy-link-name">Hide.me Proxy</div>
+              <div class="proxy-link-url">hide.me/en/proxy</div>
+            </div>
+          </a>
+          <a class="proxy-link-card" href="https://gnmath.global.ssl.fastly.net" target="_blank" rel="noopener">
+            <div class="proxy-link-icon">🎮</div>
+            <div class="proxy-link-info">
+              <div class="proxy-link-name">GN-Math Games</div>
+              <div class="proxy-link-url">gnmath.global.ssl.fastly.net</div>
+            </div>
+          </a>
+          <a class="proxy-link-card" href="https://cineby.ws" target="_blank" rel="noopener">
+            <div class="proxy-link-icon">🎬</div>
+            <div class="proxy-link-info">
+              <div class="proxy-link-name">Cineby Movies</div>
+              <div class="proxy-link-url">cineby.ws</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end main-content -->
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <p>⚡ <strong>NexusHub</strong> — Games powered by <a href="https://gnmath.global.ssl.fastly.net" target="_blank">GN-Math</a> · Movies by <a href="https://cineby.ws" target="_blank">Cineby</a> · Proxy by <a href="https://vcsaontop.bayworld.net" target="_blank">VCSA On Top</a></p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
